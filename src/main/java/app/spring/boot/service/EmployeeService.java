@@ -27,8 +27,14 @@ public class EmployeeService {
                 .collect(Collectors.toList());
     }
 
-    public void saveOrUpdate(Employee employee) {
-        employeeRepository.save(employee);
+    public void saveOrUpdate(EmployeeDto employee) {
+
+        Employee employeeEntity = new Employee();
+        employeeEntity.setName(employee.getName());
+        employeeEntity.setSalary(employee.getSalary());
+        employeeEntity.setSurname(employee.getSurname());
+
+        employeeRepository.save(employeeEntity);
     }
 
     public void delete(Long id) {

@@ -1,2 +1,10 @@
 server:
   port: 8085
+
+
+spring:
+  data:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: password
+    driver: org.postgresql.Driver

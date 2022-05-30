@@ -7,10 +7,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/employee")
@@ -21,28 +25,29 @@ public class EmployeeController {
 
     @GetMapping("/getEmployees")
     public List<EmployeeDto> getEmployee() {
+        log.info("Получаем данные для сервиса клиента");
         return employeeService.findAll();
     }
 
     @PostMapping("/saveEmployee")
-    public void saveEmployee(@RequestBody Employee employee) {
+    public void saveEmployee(@RequestBody EmployeeDto employee) {
         employeeService.saveOrUpdate(employee);
-        log.info("Успешное сохранение");
+        log.info("Успешное сохранение сотрудника");
     }
 
     @PutMapping("/updateEmployee")
-    public void updateEmployee(@RequestBody Employee employee) {
+    public void updateEmployee(@RequestBody EmployeeDto employee) {
         employeeService.saveOrUpdate(employee);
-        log.info("Успешное обновление");
+       //log.info("Успешное обновление сотрудника с id - {}", employee.getId());
     }
 
     @DeleteMapping("/deleteEmployee/{id}")
     public void delete(@PathVariable(name = "id") Long id) {
-        try {
-            employeeService.delete(id);
-            log.info("Успешное удаление по id. Указанный id - {}", id);
-        } catch (Exception e) {
-            log.error("Ошибка удаления по id. Указанный id - {}", id);
+
+        if (id == -1L) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Неверно заданный id для удаления");
         }
+
+        employeeService.delete(id);
     }
 }

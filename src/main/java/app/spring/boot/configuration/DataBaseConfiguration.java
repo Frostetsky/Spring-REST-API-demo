@@ -3,6 +3,7 @@ package app.spring.boot.configuration;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
@@ -33,13 +34,18 @@ public class DataBaseConfiguration {
         return local;
     }
 
+    /**
+     * Environment является bean-ом Spring Core и позволяет считать данные из yml.properties файлов
+     * @param environment
+     * @return
+     */
     @Bean
-    public BasicDataSource getData(){
+    public BasicDataSource getData(Environment environment){
         BasicDataSource basicDataSource = new BasicDataSource();
-        basicDataSource.setDriverClassName("org.postgresql.Driver");
-        basicDataSource.setUrl("jdbc:postgresql://localhost:5432/postgres");
-        basicDataSource.setPassword("password");
-        basicDataSource.setUsername("postgres");
+        basicDataSource.setDriverClassName(environment.getProperty("spring.data.driver"));
+        basicDataSource.setUrl(environment.getProperty("spring.data.url"));
+        basicDataSource.setPassword(environment.getProperty("spring.data.password"));
+        basicDataSource.setUsername(environment.getProperty("spring.data.username"));
         return basicDataSource;
     }
 }
